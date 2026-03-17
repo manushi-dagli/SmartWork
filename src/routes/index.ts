@@ -16,12 +16,14 @@ import { queryRoutes } from "./query.routes.js";
 import { invoiceRoutes } from "./invoice.routes.js";
 import { paymentRoutes } from "./payment.routes.js";
 import { dashboardRoutes } from "./dashboard.routes.js";
+import { analyticsRoutes } from "./analytics.routes.js";
 
 const apiRouter = Router();
 
 // Profile and dashboard first so they are never matched by other routes. No requireAbility — all authenticated users can access.
 apiRouter.use(profileRoutes);
 apiRouter.use(dashboardRoutes);
+apiRouter.use(analyticsRoutes);
 apiRouter.use(superAdminRoutes);
 apiRouter.use(taskConfigRoutes);
 apiRouter.use(taskRequestRoutes);

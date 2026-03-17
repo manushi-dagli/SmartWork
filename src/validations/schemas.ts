@@ -62,6 +62,7 @@ export const uuidSchema = z.string().uuid("Invalid ID format");
 
 /** Create task request body — taskId; optional subtaskId (taskId must match subtask's task); only email/phone validated */
 export const createTaskRequestSchema = z.object({
+  firmId: z.union([uuidSchema, z.null()]).optional(),
   taskId: uuidSchema,
   subtaskId: z.union([uuidSchema, z.null()]).optional(),
   contactName: optionalText().optional(),
@@ -77,6 +78,7 @@ export const createTaskRequestSchema = z.object({
 
 /** Update task request body (all optional) */
 export const updateTaskRequestSchema = z.object({
+  firmId: z.union([uuidSchema, z.null()]).optional(),
   taskId: uuidSchema.optional(),
   subtaskId: z.union([uuidSchema, z.null()]).optional(),
   contactName: optionalText().optional(),
@@ -134,6 +136,7 @@ export const createClientSchema = z.object({
   bankDetails: z.unknown().optional(),
   dsc: z.union([z.string(), z.null()]).optional(),
   otp: z.union([z.string(), z.null()]).optional(),
+  firmId: z.union([uuidSchema, z.null()]).optional(),
   familyId: z.union([uuidSchema, z.null()]).optional(),
   taskId: z.union([uuidSchema, z.null()]).optional(),
   subtaskId: z.union([uuidSchema, z.null()]).optional(),
@@ -160,6 +163,7 @@ export const updateClientSchema = z.object({
   bankDetails: z.unknown().optional(),
   dsc: z.union([z.string(), z.null()]).optional(),
   otp: z.union([z.string(), z.null()]).optional(),
+  firmId: z.union([uuidSchema, z.null()]).optional(),
   familyId: z.union([uuidSchema, z.null()]).optional(),
   taskId: z.union([uuidSchema, z.null()]).optional(),
   subtaskId: z.union([uuidSchema, z.null()]).optional(),

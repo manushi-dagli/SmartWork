@@ -84,6 +84,7 @@ export async function getTaskRequestWithDocuments(
 }
 
 export interface CreateTaskRequestDto {
+  firmId?: string | null;
   taskId: string;
   subtaskId?: string | null;
   contactName?: string | null;
@@ -101,6 +102,7 @@ export async function createTaskRequest(dto: CreateTaskRequestDto): Promise<Task
   const [row] = await db
     .insert(taskRequests)
     .values({
+      firmId: dto.firmId ?? null,
       taskId: dto.taskId,
       subtaskId: dto.subtaskId ?? null,
       contactName: dto.contactName ?? null,
@@ -119,6 +121,7 @@ export async function createTaskRequest(dto: CreateTaskRequestDto): Promise<Task
 }
 
 export interface UpdateTaskRequestDto {
+  firmId?: string | null;
   taskId?: string;
   subtaskId?: string | null;
   contactName?: string | null;

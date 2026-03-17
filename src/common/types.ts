@@ -115,6 +115,7 @@ export interface Client {
   bankDetails: unknown;
   dsc: string | null;
   otp: string | null;
+  firmId: string | null;
   familyId: string | null;
   taskId: string | null;
   subtaskId: string | null;
@@ -143,6 +144,7 @@ export interface CreateClientDto {
   bankDetails?: unknown;
   dsc?: string | null;
   otp?: string | null;
+  firmId?: string | null;
   familyId?: string | null;
   taskId?: string | null;
   subtaskId?: string | null;
@@ -169,6 +171,7 @@ export interface UpdateClientDto {
   bankDetails?: unknown;
   dsc?: string | null;
   otp?: string | null;
+  firmId?: string | null;
   familyId?: string | null;
   taskId?: string | null;
   subtaskId?: string | null;

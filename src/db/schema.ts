@@ -147,6 +147,7 @@ export const clients = pgTable("clients", {
   bankDetails: jsonb("bank_details"),
   dsc: text("dsc"),
   otp: text("otp"),
+  firmId: uuid("firm_id").references(() => firms.id, { onDelete: "set null" }),
   familyId: uuid("family_id").references(() => family.id, {
     onDelete: "set null",
   }),
@@ -275,6 +276,7 @@ export const documentMaster = pgTable("document_master", {
 export const taskRequests = pgTable("task_requests", {
   id: uuid("id").primaryKey().defaultRandom(),
   status: taskRequestStatusEnum("status").notNull().default("PENDING"),
+  firmId: uuid("firm_id").references(() => firms.id, { onDelete: "set null" }),
   taskId: uuid("task_id")
     .notNull()
     .references(() => tasks.id, { onDelete: "restrict" }),
