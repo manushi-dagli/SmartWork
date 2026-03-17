@@ -71,6 +71,97 @@
       "when": 1773338900000,
       "tag": "0009_inquiry_second_contact_phone",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1773500000000,
+      "tag": "0010_tasks_subtasks_client_links",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1773600000000,
+      "tag": "0011_assignments",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1773601000000,
+      "tag": "0012_allocated_tasks",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1773602000000,
+      "tag": "0013_milestones",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1773603000000,
+      "tag": "0014_assignment_documents",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1773604000000,
+      "tag": "0015_queries",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1773605000000,
+      "tag": "0016_allocated_task_review",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1773606000000,
+      "tag": "0017_invoices",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1773607000000,
+      "tag": "0018_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1773608000000,
+      "tag": "0019_subtask_terms_cost",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1773609000000,
+      "tag": "0020_document_master_no_task",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1773610000000,
+      "tag": "0021_drop_term_templates",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1773611000000,
+      "tag": "0022_task_request_attachments",
+      "breakpoints": true
     }
   ]
 }

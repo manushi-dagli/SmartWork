@@ -23,6 +23,13 @@ function mapRow(row: typeof clients.$inferSelect): Client {
     dsc: row.dsc,
     otp: row.otp,
     familyId: row.familyId,
+    taskId: row.taskId,
+    subtaskId: row.subtaskId,
+    taskDueDate: row.taskDueDate?.toISOString() ?? null,
+    subtaskDueDate: row.subtaskDueDate?.toISOString() ?? null,
+    assignmentTerms: row.assignmentTerms ?? null,
+    paymentTerms: row.paymentTerms ?? null,
+    paymentCost: row.paymentCost ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -60,6 +67,13 @@ export const createClient = async (dto: CreateClientDto): Promise<Client> => {
       dsc: dto.dsc ?? null,
       otp: dto.otp ?? null,
       familyId: dto.familyId ?? null,
+      taskId: dto.taskId ?? null,
+      subtaskId: dto.subtaskId ?? null,
+      taskDueDate: dto.taskDueDate != null ? new Date(dto.taskDueDate) : null,
+      subtaskDueDate: dto.subtaskDueDate != null ? new Date(dto.subtaskDueDate) : null,
+      assignmentTerms: dto.assignmentTerms ?? null,
+      paymentTerms: dto.paymentTerms ?? null,
+      paymentCost: dto.paymentCost ?? null,
     })
     .returning();
   if (!row) throw new Error("Insert failed");
@@ -89,6 +103,17 @@ export const updateClient = async (id: string, dto: UpdateClientDto): Promise<Cl
       ...(dto.dsc !== undefined && { dsc: dto.dsc }),
       ...(dto.otp !== undefined && { otp: dto.otp }),
       ...(dto.familyId !== undefined && { familyId: dto.familyId }),
+      ...(dto.taskId !== undefined && { taskId: dto.taskId }),
+      ...(dto.subtaskId !== undefined && { subtaskId: dto.subtaskId }),
+      ...(dto.taskDueDate !== undefined && {
+        taskDueDate: dto.taskDueDate != null ? new Date(dto.taskDueDate) : null,
+      }),
+      ...(dto.subtaskDueDate !== undefined && {
+        subtaskDueDate: dto.subtaskDueDate != null ? new Date(dto.subtaskDueDate) : null,
+      }),
+      ...(dto.assignmentTerms !== undefined && { assignmentTerms: dto.assignmentTerms }),
+      ...(dto.paymentTerms !== undefined && { paymentTerms: dto.paymentTerms }),
+      ...(dto.paymentCost !== undefined && { paymentCost: dto.paymentCost }),
       updatedAt: new Date(),
     })
     .where(eq(clients.id, id))

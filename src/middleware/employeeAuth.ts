@@ -30,6 +30,7 @@ const ADMIN_FALLBACK_PERMISSIONS: PermissionLike[] = [
   { action: "create", subject: "Role", scope: null },
   { action: "update", subject: "Role", scope: "below" },
   { action: "delete", subject: "Role", scope: "below" },
+  { action: "manage", subject: "Assignment", scope: null },
 ];
 
 const MANAGER_FALLBACK_PERMISSIONS: PermissionLike[] = [
@@ -48,6 +49,7 @@ const MANAGER_FALLBACK_PERMISSIONS: PermissionLike[] = [
   { action: "create", subject: "Role", scope: null },
   { action: "update", subject: "Role", scope: "below" },
   { action: "delete", subject: "Role", scope: "below" },
+  { action: "manage", subject: "Assignment", scope: null },
 ];
 
 export type AuthMeta = {
@@ -161,7 +163,7 @@ export const requireEmployeeAuth = async (
   }
 };
 
-/** Only super admins can proceed; others get 403. Use for inquiry config and other super-admin-only routes. */
+/** Only super admins can proceed; others get 403. Use for super-admin-only routes. */
 export const requireSuperAdmin = (req: EmployeeAuthRequest, res: Response, next: NextFunction): void => {
   if (req.employee?.isSuperAdmin) {
     next();
@@ -170,14 +172,23 @@ export const requireSuperAdmin = (req: EmployeeAuthRequest, res: Response, next:
   res.status(403).json({ success: false, error: "Forbidden: Super Admin only", code: "FORBIDDEN" });
 };
 
-/** Only SUPER_ADMIN, ADMIN, and MANAGER can create inquiries; EMPLOYEE and ARTICLE get 403. Use on POST /inquiries only. */
-export const requireCanCreateInquiry = (req: EmployeeAuthRequest, res: Response, next: NextFunction): void => {
+/** Super admins or ADMIN role can proceed; others get 403. Use for task config (admins can view/edit). */
+export const requireSuperAdminOrAdmin = (req: EmployeeAuthRequest, res: Response, next: NextFunction): void => {
+  if (req.employee?.isSuperAdmin || req.employee?.roleValue === "ADMIN") {
+    next();
+    return;
+  }
+  res.status(403).json({ success: false, error: "Forbidden: Super Admin or Admin only", code: "FORBIDDEN" });
+};
+
+/** Only SUPER_ADMIN, ADMIN, and MANAGER can create task requests; EMPLOYEE and ARTICLE get 403. Use on POST /task-requests only. */
+export const requireCanCreateTaskRequest = (req: EmployeeAuthRequest, res: Response, next: NextFunction): void => {
   const roleValue = req.employee?.roleValue;
   if (roleValue === "SUPER_ADMIN" || roleValue === "ADMIN" || roleValue === "MANAGER") {
     next();
     return;
   }
-  res.status(403).json({ success: false, error: "Forbidden: Only Super Admin, Admin, or Manager can create inquiries", code: "FORBIDDEN" });
+  res.status(403).json({ success: false, error: "Forbidden: Only Super Admin, Admin, or Manager can create task requests", code: "FORBIDDEN" });
 };
 
 export const requireAbility = (action: string, subject: string) => {

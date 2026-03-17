@@ -3,6 +3,7 @@ import { db } from "../config/database.js";
 import {
   taskRequests,
   taskRequestDocuments,
+  taskRequestAttachments,
   documentMaster,
 } from "../db/schema.js";
 import type { TaskRequestRow } from "../db/schema.js";
@@ -12,8 +13,16 @@ import * as clientRepo from "./client.repository.js";
 
 export type TaskRequestStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
+export interface TaskRequestAttachmentMeta {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  createdAt: Date;
+}
+
 export interface TaskRequestWithDocuments extends TaskRequestRow {
   documentIds: string[];
+  attachments: TaskRequestAttachmentMeta[];
 }
 
 export interface DocumentForTaskRequest {
@@ -42,7 +51,7 @@ export async function getTaskRequestById(id: string): Promise<TaskRequestRow | u
   return rows[0];
 }
 
-/** Get task request with linked document IDs. */
+/** Get task request with linked document IDs and attachment metadata. */
 export async function getTaskRequestWithDocuments(
   id: string
 ): Promise<TaskRequestWithDocuments | undefined> {
@@ -52,20 +61,40 @@ export async function getTaskRequestWithDocuments(
     .select({ documentMasterId: taskRequestDocuments.documentMasterId })
     .from(taskRequestDocuments)
     .where(eq(taskRequestDocuments.taskRequestId, id));
+  const attachmentRows = await db
+    .select({
+      id: taskRequestAttachments.id,
+      fileName: taskRequestAttachments.fileName,
+      mimeType: taskRequestAttachments.mimeType,
+      createdAt: taskRequestAttachments.createdAt,
+    })
+    .from(taskRequestAttachments)
+    .where(eq(taskRequestAttachments.taskRequestId, id))
+    .orderBy(asc(taskRequestAttachments.createdAt));
   return {
     ...tr,
     documentIds: links.map((l) => l.documentMasterId),
+    attachments: attachmentRows.map((a) => ({
+      id: a.id,
+      fileName: a.fileName,
+      mimeType: a.mimeType,
+      createdAt: a.createdAt,
+    })),
   };
 }
 
 export interface CreateTaskRequestDto {
   taskId: string;
+  subtaskId?: string | null;
   contactName?: string | null;
   contactEmail?: string | null;
   contactPhoneCountryCode?: string | null;
   contactPhoneNumber?: string | null;
   contactPhone2CountryCode?: string | null;
   contactPhone2Number?: string | null;
+  assignmentTerms?: string | null;
+  paymentTerms?: string | null;
+  paymentCost?: string | null;
 }
 
 export async function createTaskRequest(dto: CreateTaskRequestDto): Promise<TaskRequestRow> {
@@ -73,12 +102,16 @@ export async function createTaskRequest(dto: CreateTaskRequestDto): Promise<Task
     .insert(taskRequests)
     .values({
       taskId: dto.taskId,
+      subtaskId: dto.subtaskId ?? null,
       contactName: dto.contactName ?? null,
       contactEmail: dto.contactEmail ?? null,
       contactPhoneCountryCode: dto.contactPhoneCountryCode ?? null,
       contactPhoneNumber: dto.contactPhoneNumber ?? null,
       contactPhone2CountryCode: dto.contactPhone2CountryCode ?? null,
       contactPhone2Number: dto.contactPhone2Number ?? null,
+      assignmentTerms: dto.assignmentTerms ?? null,
+      paymentTerms: dto.paymentTerms ?? null,
+      paymentCost: dto.paymentCost ?? null,
     })
     .returning();
   if (!row) throw new Error("Insert task request failed");
@@ -87,16 +120,16 @@ export async function createTaskRequest(dto: CreateTaskRequestDto): Promise<Task
 
 export interface UpdateTaskRequestDto {
   taskId?: string;
+  subtaskId?: string | null;
   contactName?: string | null;
   contactEmail?: string | null;
   contactPhoneCountryCode?: string | null;
   contactPhoneNumber?: string | null;
   contactPhone2CountryCode?: string | null;
   contactPhone2Number?: string | null;
-  assignmentTermsSnapshot?: unknown;
-  paymentTermsSnapshot?: unknown;
-  assignmentTermTemplateId?: string | null;
-  paymentTermTemplateId?: string | null;
+  assignmentTerms?: string | null;
+  paymentTerms?: string | null;
+  paymentCost?: string | null;
   emailedAt?: Date | null;
   whatsappSentAt?: Date | null;
 }
@@ -149,23 +182,7 @@ export async function getDocumentsForTaskRequest(
     .where(inArray(documentMaster.id, ids));
 }
 
-/** Get all documents from master (document_master no longer has task/subtask link). */
-export async function getDocumentsByTaskOrSubtask(
-  _taskId: string,
-  _subtaskId?: string | null
-): Promise<DocumentForTaskRequest[]> {
-  const rows = await db
-    .select({
-      id: documentMaster.id,
-      name: documentMaster.name,
-      description: documentMaster.description,
-    })
-    .from(documentMaster)
-    .orderBy(asc(documentMaster.name));
-  return rows;
-}
-
-/** Map task request contact fields to CreateClientDto. */
+/** Map task request contact and terms fields to CreateClientDto. */
 function taskRequestContactToClientDto(tr: TaskRequestRow): CreateClientDto {
   const name = (tr.contactName ?? "").trim();
   const firstSpace = name.indexOf(" ");
@@ -184,6 +201,11 @@ function taskRequestContactToClientDto(tr: TaskRequestRow): CreateClientDto {
     email1: tr.contactEmail ?? null,
     phone1CountryCode: tr.contactPhoneCountryCode ?? null,
     phone1Number: tr.contactPhoneNumber ?? null,
+    taskId: tr.taskId ?? null,
+    subtaskId: tr.subtaskId ?? null,
+    assignmentTerms: tr.assignmentTerms ?? null,
+    paymentTerms: tr.paymentTerms ?? null,
+    paymentCost: tr.paymentCost ?? null,
   };
 }
 
@@ -227,4 +249,3 @@ export async function rejectTaskRequest(taskRequestId: string): Promise<TaskRequ
   if (!updated) throw new Error("Update task request failed");
   return updated;
 }
-

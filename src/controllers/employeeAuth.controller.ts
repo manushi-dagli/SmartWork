@@ -111,9 +111,9 @@ export const employeeLogout = async (_req: Request, res: Response): Promise<void
   sendSuccess(res, { loggedOut: true });
 };
 
-/** GET /me — current employee + permissions (requires employee auth). */
-export const getMe = async (req: EmployeeAuthRequest, res: Response): Promise<void> => {
-  console.log("[API] GET /api/auth/me");
+/** GET /session — current employee + permissions (requires employee auth). */
+export const getSession = async (req: EmployeeAuthRequest, res: Response): Promise<void> => {
+  console.log("[API] GET /api/auth/session");
   sendSuccess(res, {
     ...req.employee,
     roleId: req.authMeta?.roleId ?? null,

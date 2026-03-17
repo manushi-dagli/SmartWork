@@ -7,6 +7,6 @@ const router = Router();
 
 router.post("/login", asyncHandler(employeeAuthController.employeeLogin));
 router.post("/logout", asyncHandler(employeeAuthController.employeeLogout));
-router.get("/me", requireEmployeeAuth, asyncHandler(employeeAuthController.getMe));
+router.get("/session", requireEmployeeAuth, asyncHandler(employeeAuthController.getSession));
 
 export const authRoutes = router;

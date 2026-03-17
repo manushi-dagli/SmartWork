@@ -38,6 +38,11 @@ const PERMISSION_SPECS: [string, string, string, "all" | "below" | "same_or_belo
   ["read:family", "read", "Family", null],
   ["read:employee:any", "read", "Employee", null],
   ["read:role:any", "read", "Role", null],
+  ["manage:assignment", "manage", "Assignment", null],
+  ["read:assignment", "read", "Assignment", null],
+  ["create:assignment", "create", "Assignment", null],
+  ["update:assignment", "update", "Assignment", null],
+  ["delete:assignment", "delete", "Assignment", null],
 ];
 
 async function seed() {
@@ -85,6 +90,7 @@ async function seed() {
         "create:role",
         "update:role",
         "delete:role",
+        "manage:assignment",
       ],
     },
     {
@@ -104,15 +110,32 @@ async function seed() {
         "create:role",
         "update:role",
         "delete:role",
+        "manage:assignment",
       ],
     },
     {
       roleValue: "EMPLOYEE",
-      permissionCodes: ["read:firm", "read:client", "read:family", "read:employee:any", "read:role:any", "read:report"],
+      permissionCodes: [
+        "read:firm",
+        "read:client",
+        "read:family",
+        "read:employee:any",
+        "read:role:any",
+        "read:report",
+        "read:assignment",
+      ],
     },
     {
       roleValue: "ARTICLE",
-      permissionCodes: ["read:firm", "read:client", "read:family", "read:employee:any", "read:role:any", "read:report"],
+      permissionCodes: [
+        "read:firm",
+        "read:client",
+        "read:family",
+        "read:employee:any",
+        "read:role:any",
+        "read:report",
+        "read:assignment",
+      ],
     },
   ];
 
